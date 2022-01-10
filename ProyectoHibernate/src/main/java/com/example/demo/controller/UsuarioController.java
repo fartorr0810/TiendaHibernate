@@ -10,8 +10,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.model.Usuario;
+import com.example.demo.service.PedidoService;
+import com.example.demo.service.ProductoService;
 import com.example.demo.service.UsuarioService;
 
 @Controller
@@ -20,7 +23,10 @@ public class UsuarioController {
 	private HttpSession sesion;
 	@Autowired
 	private UsuarioService servicioUsuario;
-	
+	@Autowired
+	private ProductoService servicioProducto;
+	@Autowired
+	private PedidoService servicioPedido;
 	@GetMapping({"/","/login"})
 	public String cargarUsuarios(Model model) {
 		model.addAttribute("listausuarios", servicioUsuario.findAll());
@@ -41,4 +47,32 @@ public class UsuarioController {
 		return direccion;
 		
 	}
+	@GetMapping({"/seleccion/crearpedido"})
+	public String crearPedido(Model model) {
+		if (sesion.getAttribute("usuario")==null || sesion.isNew()) {
+			return "redirect:/login";
+		}		
+		model.addAttribute("listaproductos",servicioProducto.findAll());
+		return "crearpedido";
+	}
+	@PostMapping({"/resumenpedido/submit"})
+	public String crearPedidoProcesado(Model model,@RequestParam(name="numeroproducto")Integer[] cantidades) {
+		String direccion="";
+		boolean vacio=true;
+		for (int i = 0; i < cantidades.length; i++) {
+			if (cantidades[i]!=null) {
+				vacio=false;
+			}
+		}
+		if (vacio) {
+			direccion="redirect:/seleccion/crearpedido";
+		}else {
+			//this.servicioProducto.resumenPedido(cantidades);
+			//this.servicioPedido.anadirProductoUnidades(cantidades);
+			//model.addAttribute("listaproductounidades",this.servicioproducto.getListaproductoUnidades());
+			model.addAttribute("usuario",sesion.getAttribute("usuario"));
+			direccion="resumenpedido";
+		}
+		return direccion;
+		}
 }
