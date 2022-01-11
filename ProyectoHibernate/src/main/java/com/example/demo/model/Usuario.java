@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 @Entity
@@ -24,8 +27,8 @@ public class Usuario {
 	@Email
 	private String email;
 	private String telefono;
-	@ElementCollection
-	@CollectionTable(name="ListaPedidos", joinColumns = @JoinColumn(name="Pedidos_id"))
+	@OneToMany(//cascade = CascadeType.ALL, orphanRemoval = true
+			fetch=FetchType.EAGER)
 	private List<Pedido> listapedidios=new ArrayList<>();
 	
 	public Usuario() {

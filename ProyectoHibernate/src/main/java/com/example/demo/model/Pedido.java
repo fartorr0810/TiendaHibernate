@@ -4,12 +4,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -17,8 +20,11 @@ import javax.persistence.Table;
 public class Pedido {
 	@Id @GeneratedValue
 	private Integer id;
-	@ElementCollection
-	@CollectionTable(name="ListaProductos", joinColumns = @JoinColumn(name="Productos_id"))
+	//@ElementCollection
+	//@CollectionTable(name="ListaProductos", joinColumns = @JoinColumn(name="Productos_id"))
+    @OneToMany(//cascade = CascadeType.ALL, 
+    		//orphanRemoval = true,
+    		fetch = FetchType.EAGER)
 	private List<Producto> listaproductos;
 	private String tipopedido;
 	private Date fechapedido;
@@ -39,6 +45,11 @@ public class Pedido {
 		this.direccionentrega = direccionentrega;
 		this.emailcontacto = emailcontacto;
 		this.telefonopedido = telefonopedido;
+	}
+
+	public Pedido(List<Producto> listaproductos) {
+		super();
+		this.listaproductos = listaproductos;
 	}
 
 	public Integer getId() {

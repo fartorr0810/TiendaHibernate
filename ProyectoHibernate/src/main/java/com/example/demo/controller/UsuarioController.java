@@ -67,12 +67,24 @@ public class UsuarioController {
 		if (vacio) {
 			direccion="redirect:/seleccion/crearpedido";
 		}else {
-			//this.servicioProducto.resumenPedido(cantidades);
+			//this.servicioProducto.(cantidades);
 			//this.servicioPedido.anadirProductoUnidades(cantidades);
+			this.servicioPedido.crearPedido(cantidades);
 			//model.addAttribute("listaproductounidades",this.servicioproducto.getListaproductoUnidades());
 			model.addAttribute("usuario",sesion.getAttribute("usuario"));
 			direccion="resumenpedido";
 		}
 		return direccion;
 		}
+	@GetMapping({"resumenpedido"})
+	public String resumenDelPedido(Model model) {
+		if (sesion.getAttribute("usuario")==null) {
+			return "redirect:/login";			
+		}
+		//Aqui esta el mapa auxilar raro
+		model.addAttribute("listaproductounidades",this.servicioproducto.getListaproductoUnidades());
+		model.addAttribute("usuario",sesion.getAttribute("usuario"));
+		return "resumenpedido";
+	}
+	
 }
