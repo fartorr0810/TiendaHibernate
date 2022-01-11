@@ -70,7 +70,7 @@ public class UsuarioController {
 			//this.servicioProducto.(cantidades);
 			//this.servicioPedido.anadirProductoUnidades(cantidades);
 			this.servicioPedido.crearPedido(cantidades);
-			//model.addAttribute("listaproductounidades",this.servicioproducto.getListaproductoUnidades());
+			model.addAttribute("listaproductounidades",this.servicioPedido.getListatemporal());
 			model.addAttribute("usuario",sesion.getAttribute("usuario"));
 			direccion="resumenpedido";
 		}
@@ -81,10 +81,30 @@ public class UsuarioController {
 		if (sesion.getAttribute("usuario")==null) {
 			return "redirect:/login";			
 		}
-		//Aqui esta el mapa auxilar raro
-		model.addAttribute("listaproductounidades",this.servicioproducto.getListaproductoUnidades());
 		model.addAttribute("usuario",sesion.getAttribute("usuario"));
 		return "resumenpedido";
 	}
-	
+	@PostMapping({"seleccion/listado"})
+	public String listarPedidos(Model model, @RequestParam(required=true,value="tipoenvio") String tipoEnvio,
+			@RequestParam(required=false,value="email") String email,
+			@RequestParam(required=false,value="telefono") String phone,
+			@RequestParam(required=false,value="direccion") String direccion) {
+		String direccionreturn="";
+		if ("".equals(email) || "".equals(phone) || "".equals(direccion)) {
+			direccionreturn="redirect:/resumenpedido";
+		}else {
+			this.servicioPedido.addPedido((Usuario) sesion.getAttribute("usuario"), tipoEnvio, this.servicioPedido.getListatemporal(), direccion,email , phone);
+			model.addAttribute("listapedidos",servicioPedido.findPedidosUsuario((Usuario) sesion.getAttribute("usuario")));
+			direccionreturn="redirect:/seleccion/listado";
+		}
+		return direccionreturn;
+	}
+	@GetMapping({"seleccion/listado"})
+	public String finalizarPedido(Model model) {
+		if (sesion.getAttribute("usuario")==null) {
+			return "redirect:/login";			
+		}
+		model.addAttribute("listapedidos",servicioPedido.findPedidosUsuario((Usuario) sesion.getAttribute("usuario")));
+		return "listapedidos";
+	}
 }

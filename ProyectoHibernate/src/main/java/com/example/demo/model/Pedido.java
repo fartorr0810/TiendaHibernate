@@ -30,6 +30,7 @@ public class Pedido {
 	private Date fechapedido;
 	private String direccionentrega;
 	private String emailcontacto;
+
 	private String telefonopedido;
 	
 	public Pedido() {
@@ -46,7 +47,17 @@ public class Pedido {
 		this.emailcontacto = emailcontacto;
 		this.telefonopedido = telefonopedido;
 	}
-
+	//TODO La fechaaa
+	public Pedido(List<Producto> listaproductos, String tipopedido, String direccionentrega, String emailcontacto,
+			String telefonopedido) {
+		super();
+		this.listaproductos = listaproductos;
+		this.tipopedido = tipopedido;
+		this.direccionentrega = direccionentrega;
+		this.fechapedido=new Date();
+		this.emailcontacto = emailcontacto;
+		this.telefonopedido = telefonopedido;
+	}
 	public Pedido(List<Producto> listaproductos) {
 		super();
 		this.listaproductos = listaproductos;

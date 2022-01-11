@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Pedido;
 import com.example.demo.model.Producto;
+import com.example.demo.model.Usuario;
 import com.example.demo.repository.PedidoRepository;
 import com.example.demo.repository.ProductoRepository;
 @Primary
@@ -22,6 +23,9 @@ public class PedidoServiceDB implements PedidoService {
 	PedidoRepository repositorio;
 	@Autowired
 	ProductoRepository repositorioproductos;
+	private List<Producto> listatemporal=new ArrayList<Producto>();
+	
+	
 	@Override
 	public Pedido add(Pedido p) {
 		return repositorio.save(p);
@@ -51,8 +55,29 @@ public class PedidoServiceDB implements PedidoService {
 		while (sig.hasNext()) {
 			Producto producto = sig.next();
 			producto.setCantidad(cantidades[i]);
-			i++;
+			listatemporal.add(producto);
+			i++;			
 		}		
 		return p;
 	}
+	@Override
+	public List<Producto> getListatemporal() {
+		return listatemporal;
+	}
+
+	@Override
+	public void addPedido(Usuario usuario, String tipopedido, List<Producto> listaproductos, String direccionentrega,
+			String emailcontacto, String telefonocontacto) {
+		Pedido pedido=new Pedido(listaproductos,tipopedido,direccionentrega,emailcontacto,telefonocontacto);
+		usuario.addPedido(pedido);
+		repositorio.save(pedido);
+	}
+
+	@Override
+	public List<Pedido> findPedidosUsuario(Usuario usuario) {
+		List<Pedido> pedidos;
+		pedidos=usuario.getListapedidios();
+		return pedidos;
+	}
+
 }

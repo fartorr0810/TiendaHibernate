@@ -94,7 +94,9 @@ public class Usuario {
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
-
+	public void addPedido(Pedido p) {
+		this.listapedidios.add(p);
+	}
 	@Override
 	public int hashCode() {
 		return Objects.hash(password, username);

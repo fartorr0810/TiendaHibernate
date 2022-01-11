@@ -22,10 +22,10 @@
 	  </thead>
 	<tbody>
 		<tr th:each="producto : ${listaproductounidades}">
-			<td th:if="${producto.value>0}" th:text="${producto.key.getNameproduct()}"></td>
-			<td th:if="${producto.value>0}" th:text="${producto.key.getPrice()}"></td>
-			<td th:if="${producto.value>0}" th:text="${producto.value}">
-			<td th:if="${producto.value>0}" th:text="${producto.key.getPrice()*producto.value}"></td>
+			<td th:if="${producto.getCantidad()>0}" th:text="${producto.getNombre()}"></td>
+			<td th:if="${producto.getCantidad()>0}" th:text="${producto.getPrecio()}"></td>
+			<td th:if="${producto.getCantidad()>0}" th:text="${producto.getCantidad()}">
+			<td th:if="${producto.getCantidad()>0}" th:text="${producto.getPrecio()*producto.getPrecio()}"></td>
 		</tr>
 	</tbody>
 	</table>
@@ -41,7 +41,7 @@
 	  <tbody>
 		<tr >
 		<td><input type="text" name="email" th:value="${usuario.getEmail()}"/></td>
-		<td><input type="number" name="telefono" th:value="${usuario.getPhone()}"/></td>
+		<td><input type="number" name="telefono" th:value="${usuario.getTelefono()}"/></td>
 		<td><input type="text" name="direccion" th:value="${usuario.getDireccion()}"/></td>
 		</tr>
 
