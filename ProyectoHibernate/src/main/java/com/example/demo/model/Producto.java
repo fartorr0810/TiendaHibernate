@@ -15,24 +15,17 @@ public class Producto {
 	private Integer id;
 	private String nombre;
 	private Double precio;
-	private int cantidad;
 	
 	public Producto() {
 		super();
 	}
 	
-	public Producto(String nombre, Double precio, int cantidad) {
-		super();
-		this.nombre = nombre;
-		this.precio = precio;
-		this.cantidad = cantidad;
-	}
-
 	public Producto(String nombre, Double precio) {
 		super();
 		this.nombre = nombre;
 		this.precio = precio;
 	}
+
 
 	public Integer getId() {
 		return id;
@@ -52,12 +45,7 @@ public class Producto {
 	public void setPrecio(Double precio) {
 		this.precio = precio;
 	}
-	public int getCantidad() {
-		return cantidad;
-	}
-	public void setCantidad(int cantidad) {
-		this.cantidad = cantidad;
-	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
