@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.demo.model.Pedido;
+import com.example.demo.model.Producto;
 import com.example.demo.model.Usuario;
 import com.example.demo.service.PedidoService;
 import com.example.demo.service.ProductoService;
@@ -67,33 +71,34 @@ public class UsuarioController {
 		if (vacio) {
 			direccion="redirect:/seleccion/crearpedido";
 		}else {
-			//this.servicioProducto.(cantidades);
-			//this.servicioPedido.anadirProductoUnidades(cantidades);
 			this.servicioPedido.crearPedido(cantidades);
+			model.addAttribute("pedido",new Pedido());
 			model.addAttribute("listaproductounidades",this.servicioPedido.getListatemporal());
 			model.addAttribute("usuario",sesion.getAttribute("usuario"));
 			direccion="resumenpedido";
 		}
 		return direccion;
 		}
-	@GetMapping({"resumenpedido"})
-	public String resumenDelPedido(Model model) {
-		if (sesion.getAttribute("usuario")==null) {
-			return "redirect:/login";			
-		}
-		model.addAttribute("usuario",sesion.getAttribute("usuario"));
-		return "resumenpedido";
-	}
+//	@GetMapping({"resumenpedido"})
+//	public String resumenDelPedido(Model model,@ModelAttribute("usuario") Pedido pedido) {
+//		if (sesion.getAttribute("usuario")==null) {
+//			return "redirect:/login";			
+//		}
+//		model.addAttribute("usuario",sesion.getAttribute("usuario"));
+//		return "resumenpedido";
+//	}
 	@PostMapping({"seleccion/listado"})
 	public String listarPedidos(Model model, @RequestParam(required=true,value="tipoenvio") String tipoEnvio,
 			@RequestParam(required=false,value="email") String email,
 			@RequestParam(required=false,value="telefono") String phone,
-			@RequestParam(required=false,value="direccion") String direccion) {
+			@RequestParam(required=false,value="direccion") String direccion,
+			@ModelAttribute("pedido") Pedido p) {
 		String direccionreturn="";
 		if ("".equals(email) || "".equals(phone) || "".equals(direccion)) {
 			direccionreturn="redirect:/resumenpedido";
 		}else {
-			this.servicioPedido.addPedido((Usuario) sesion.getAttribute("usuario"), tipoEnvio, this.servicioPedido.getListatemporal(), direccion,email , phone);
+			this.servicioPedido.addPedido((Usuario) sesion.getAttribute("usuario"), tipoEnvio,p.getListaproductos(), direccion,
+					email, phone);
 			model.addAttribute("listapedidos",servicioPedido.findPedidosUsuario((Usuario) sesion.getAttribute("usuario")));
 			direccionreturn="redirect:/seleccion/listado";
 		}

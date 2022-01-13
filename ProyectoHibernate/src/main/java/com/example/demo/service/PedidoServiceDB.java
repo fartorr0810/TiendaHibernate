@@ -23,7 +23,6 @@ public class PedidoServiceDB implements PedidoService {
 	PedidoRepository repositorio;
 	@Autowired
 	ProductoRepository repositorioproductos;
-	private List<Producto> listatemporal=new ArrayList<Producto>();
 	
 	
 	@Override
@@ -48,29 +47,26 @@ public class PedidoServiceDB implements PedidoService {
 		return null;
 	}
 	public Pedido crearPedido(Integer [] cantidades) {
-		Pedido p=new Pedido(repositorioproductos.findAll());
-		List<Producto> lista=p.getListaproductos();
+		//Crear una lista de productos, no un pedido
+		List<Producto> productos=repositorioproductos.findAll();
+		Pedido p=new Pedido(productos);
 		Iterator<Producto> sig = p.getListaproductos().iterator();
 		int i=0;
 		while (sig.hasNext()) {
 			Producto producto = sig.next();
 			producto.setCantidad(cantidades[i]);
-			listatemporal.add(producto);
 			i++;			
 		}		
 		return p;
 	}
-	@Override
-	public List<Producto> getListatemporal() {
-		return listatemporal;
-	}
 
 	@Override
-	public void addPedido(Usuario usuario, String tipopedido, List<Producto> listaproductos, String direccionentrega,
-			String emailcontacto, String telefonocontacto) {
-		Pedido pedido=new Pedido(listaproductos,tipopedido,direccionentrega,emailcontacto,telefonocontacto);
-		usuario.addPedido(pedido);
-		repositorio.save(pedido);
+	public void addPedido(Usuario usuario, String tipopedido,List<Producto> listaproductos,String direccionentrega,
+			String emailcontacto,String telefonocontacto) {
+		Pedido p=new Pedido(listaproductos,tipopedido, direccionentrega, emailcontacto,
+			telefonocontacto);
+		repositorio.save(p);
+		usuario.addPedido(p);
 	}
 
 	@Override
@@ -78,6 +74,12 @@ public class PedidoServiceDB implements PedidoService {
 		List<Pedido> pedidos;
 		pedidos=usuario.getListapedidios();
 		return pedidos;
+	}
+
+	@Override
+	public List<Producto> getListatemporal() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
