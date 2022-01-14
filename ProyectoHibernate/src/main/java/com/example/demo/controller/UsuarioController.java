@@ -18,19 +18,22 @@ import com.example.demo.model.Pedido;
 import com.example.demo.model.Producto;
 import com.example.demo.model.Usuario;
 import com.example.demo.service.PedidoService;
+import com.example.demo.service.PedidoServiceDB;
 import com.example.demo.service.ProductoService;
+import com.example.demo.service.ProductoServiceDB;
 import com.example.demo.service.UsuarioService;
+import com.example.demo.service.UsuarioServiceDB;
 
 @Controller
 public class UsuarioController {
 	@Autowired
 	private HttpSession sesion;
 	@Autowired
-	private UsuarioService servicioUsuario;
+	private UsuarioServiceDB servicioUsuario;
 	@Autowired
-	private ProductoService servicioProducto;
+	private ProductoServiceDB servicioProducto;
 	@Autowired
-	private PedidoService servicioPedido;
+	private PedidoServiceDB servicioPedido;
 	@GetMapping({"/","/login"})
 	public String cargarUsuarios(Model model) {
 		model.addAttribute("listausuarios", servicioUsuario.findAll());
@@ -57,23 +60,25 @@ public class UsuarioController {
 			return "redirect:/login";
 		}		
 		model.addAttribute("listaproductos",servicioProducto.findAll());
+		model.addAttribute("pedido",new Pedido());
 		return "crearpedido";
 	}
 	@PostMapping({"/resumenpedido/submit"})
-	public String crearPedidoProcesado(Model model,@RequestParam(name="numeroproducto")Integer[] cantidades) {
+	public String crearPedidoProcesado(Model model,@RequestParam(name="numeroproducto")Integer[] cantidades,
+			@ModelAttribute("pedido") Pedido p) {
 		String direccion="";
 		boolean vacio=true;
 		for (int i = 0; i < cantidades.length; i++) {
 			if (cantidades[i]!=null) {
-				vacio=false;
+				vacio=false;	
 			}
 		}
 		if (vacio) {
 			direccion="redirect:/seleccion/crearpedido";
 		}else {
-			this.servicioPedido.crearPedido(cantidades);
-			model.addAttribute("pedido",new Pedido());
-			model.addAttribute("listaproductounidades",this.servicioPedido.getListatemporal());
+			Pedido ped=(Pedido) model.getAttribute("pedido");
+			model.addAttribute("nuevopedido",this.servicioPedido.crearLinea(cantidades, ped));
+			model.addAttribute("lineas",ped.getListaproductos());
 			model.addAttribute("usuario",sesion.getAttribute("usuario"));
 			direccion="resumenpedido";
 		}

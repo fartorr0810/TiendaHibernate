@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -21,12 +22,10 @@ import javax.persistence.Table;
 public class Pedido {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
-	//@ElementCollection
-	//@CollectionTable(name="ListaProductos", joinColumns = @JoinColumn(name="Productos_id"))
-    @OneToMany(//cascade = CascadeType.ALL, 
-    		//orphanRemoval = true,
-    		fetch = FetchType.EAGER)
-	private List<Producto> listaproductos;
+	@ElementCollection
+	@CollectionTable(name="ListaProductos", joinColumns = @JoinColumn(name="Productos_id"))
+    @OneToMany(fetch = FetchType.EAGER)
+	private ArrayList<PedidoLinea> listalineas;
 	private String tipopedido;
 	private Date fechapedido;
 	private String direccionentrega;
@@ -34,14 +33,16 @@ public class Pedido {
 
 	private String telefonopedido;
 	
+
 	public Pedido() {
 		super();
+		this.listalineas=new ArrayList<PedidoLinea>();
 	}
 	
-	public Pedido(List<Producto> listaproductos, String tipopedido, Date fechapedido, String direccionentrega,
+	public Pedido(ArrayList<PedidoLinea> listaproductos, String tipopedido, Date fechapedido, String direccionentrega,
 			String emailcontacto, String telefonopedido) {
 		super();
-		this.listaproductos = listaproductos;
+		this.listalineas = listaproductos;
 		this.tipopedido = tipopedido;
 		this.fechapedido = fechapedido;
 		this.direccionentrega = direccionentrega;
@@ -49,19 +50,19 @@ public class Pedido {
 		this.telefonopedido = telefonopedido;
 	}
 	//TODO La fechaaa
-	public Pedido(List<Producto> listaproductos, String tipopedido, String direccionentrega, String emailcontacto,
+	public Pedido(ArrayList<PedidoLinea> listaproductos, String tipopedido, String direccionentrega, String emailcontacto,
 			String telefonopedido) {
 		super();
-		this.listaproductos = listaproductos;
+		this.listalineas = listaproductos;
 		this.tipopedido = tipopedido;
 		this.direccionentrega = direccionentrega;
 		this.fechapedido=new Date();
 		this.emailcontacto = emailcontacto;
 		this.telefonopedido = telefonopedido;
 	}
-	public Pedido(List<Producto> listaproductos) {
+	public Pedido(ArrayList<PedidoLinea> listaproductos) {
 		super();
-		this.listaproductos = listaproductos;
+		this.listalineas = listaproductos;
 	}
 
 	public Integer getId() {
@@ -70,11 +71,14 @@ public class Pedido {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public List<Producto> getListaproductos() {
-		return listaproductos;
+	public ArrayList<PedidoLinea> getListaproductos() {
+		return listalineas;
 	}
-	public void setListaproductos(List<Producto> listaproductos) {
-		this.listaproductos = listaproductos;
+	public void setListaproductos(ArrayList<PedidoLinea> listaproductos) {
+		this.listalineas = listaproductos;
+	}
+	public void addLinea(PedidoLinea linea) {
+		this.listalineas.add(linea);
 	}
 	public String getTipopedido() {
 		return tipopedido;

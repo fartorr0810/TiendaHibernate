@@ -14,7 +14,7 @@ import javax.persistence.Table;
 public class PedidoLinea {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+	private Integer lineapedidoId;
 	private Integer cantidad;
 	@ManyToOne
 	private Producto producto;
@@ -24,12 +24,14 @@ public class PedidoLinea {
 	public PedidoLinea() {
 		super();
 	}
-	public Integer getId() {
-		return id;
+
+	public PedidoLinea(Integer cantidad, Producto producto, Pedido pedido) {
+		super();
+		this.cantidad = cantidad;
+		this.producto = producto;
+		this.pedido = pedido;
 	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
+
 	public Integer getCantidad() {
 		return cantidad;
 	}
@@ -48,20 +50,11 @@ public class PedidoLinea {
 	public void setPedido(Pedido pedido) {
 		this.pedido = pedido;
 	}
+
 	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		PedidoLinea other = (PedidoLinea) obj;
-		return Objects.equals(id, other.id);
+	public String toString() {
+		return "PedidoLinea [lineapedidoId=" + lineapedidoId + ", cantidad=" + cantidad + ", producto=" + producto
+				+ ", pedido=" + pedido + "]";
 	}
 	
 	

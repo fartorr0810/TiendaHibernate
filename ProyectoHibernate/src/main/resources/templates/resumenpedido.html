@@ -21,11 +21,11 @@
 	    </tr>
 	  </thead>
 	<tbody>
-		<tr th:each="producto : ${listaproductounidades}">
-			<td th:if="${producto.getCantidad()>0}" th:text="${producto.getNombre()}"></td>
-			<td th:if="${producto.getCantidad()>0}" th:text="${producto.getPrecio()}"></td>
-			<td th:if="${producto.getCantidad()>0}" th:text="${producto.getCantidad()}">
-			<td th:if="${producto.getCantidad()>0}" th:text="${producto.getPrecio()*producto.getPrecio()}"></td>
+		<tr th:each="linea: ${lineas}">
+			<td th:text="${linea.getProducto().getNombre()}"></td>
+			<td th:text="${linea.getProducto().getPrecio()}"></td>
+			<td th:text="${linea.getCantidad()}"></td> 
+			<td th:text="${linea.getCantidad()*linea.getProducto().getPrecio()}"></td>
 		</tr>
 	</tbody>
 	</table>
