@@ -14,8 +14,7 @@ public interface PedidoService {
 	public boolean remove(int idpedido);
 	public Pedido edit(Pedido pedido);
 	public Pedido crearPedido(Integer[] cantidades);
-	public List<Producto> getListatemporal();
-	public void addPedido(Usuario usuario,String tipopedido,ArrayList<PedidoLinea> listaproductos,String direccionentrega,
+	public void addPedido(Usuario usuario,String tipopedido,List<PedidoLinea> listaproductos,String direccionentrega,
 			String emailcontacto,String telefonocontacto);
 	public List<Pedido> findPedidosUsuario(Usuario usuario);
 }

@@ -25,7 +25,7 @@ public class Pedido {
 	@ElementCollection
 	@CollectionTable(name="ListaProductos", joinColumns = @JoinColumn(name="Productos_id"))
     @OneToMany(fetch = FetchType.EAGER)
-	private ArrayList<PedidoLinea> listalineas;
+	private List<PedidoLinea> listalineas;
 	private String tipopedido;
 	private Date fechapedido;
 	private String direccionentrega;
@@ -36,10 +36,12 @@ public class Pedido {
 
 	public Pedido() {
 		super();
-		this.listalineas=new ArrayList<PedidoLinea>();
+		this.listalineas=new ArrayList<>();
+		this.fechapedido=new Date();
+
 	}
 	
-	public Pedido(ArrayList<PedidoLinea> listaproductos, String tipopedido, Date fechapedido, String direccionentrega,
+	public Pedido(List<PedidoLinea> listaproductos, String tipopedido, Date fechapedido, String direccionentrega,
 			String emailcontacto, String telefonopedido) {
 		super();
 		this.listalineas = listaproductos;
@@ -49,8 +51,7 @@ public class Pedido {
 		this.emailcontacto = emailcontacto;
 		this.telefonopedido = telefonopedido;
 	}
-	//TODO La fechaaa
-	public Pedido(ArrayList<PedidoLinea> listaproductos, String tipopedido, String direccionentrega, String emailcontacto,
+	public Pedido(List<PedidoLinea> listaproductos, String tipopedido, String direccionentrega, String emailcontacto,
 			String telefonopedido) {
 		super();
 		this.listalineas = listaproductos;
@@ -60,7 +61,7 @@ public class Pedido {
 		this.emailcontacto = emailcontacto;
 		this.telefonopedido = telefonopedido;
 	}
-	public Pedido(ArrayList<PedidoLinea> listaproductos) {
+	public Pedido(List<PedidoLinea> listaproductos) {
 		super();
 		this.listalineas = listaproductos;
 	}
@@ -71,10 +72,10 @@ public class Pedido {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public ArrayList<PedidoLinea> getListaproductos() {
+	public List<PedidoLinea> getListaproductos() {
 		return listalineas;
 	}
-	public void setListaproductos(ArrayList<PedidoLinea> listaproductos) {
+	public void setListaproductos(List<PedidoLinea> listaproductos) {
 		this.listalineas = listaproductos;
 	}
 	public void addLinea(PedidoLinea linea) {

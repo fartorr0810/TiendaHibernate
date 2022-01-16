@@ -77,9 +77,11 @@ public class UsuarioController {
 			direccion="redirect:/seleccion/crearpedido";
 		}else {
 			Pedido ped=(Pedido) model.getAttribute("pedido");
-			model.addAttribute("nuevopedido",this.servicioPedido.crearLinea(cantidades, ped));
+			//Persistir pedido
+			this.servicioPedido.crearLinea(cantidades, ped);
 			model.addAttribute("lineas",ped.getListaproductos());
 			model.addAttribute("usuario",sesion.getAttribute("usuario"));
+			model.addAttribute("nuevopedido",ped);
 			direccion="resumenpedido";
 		}
 		return direccion;
@@ -97,12 +99,13 @@ public class UsuarioController {
 			@RequestParam(required=false,value="email") String email,
 			@RequestParam(required=false,value="telefono") String phone,
 			@RequestParam(required=false,value="direccion") String direccion,
-			@ModelAttribute("pedido") Pedido p) {
+			@ModelAttribute("nuevopedido") Pedido ped) {
 		String direccionreturn="";
 		if ("".equals(email) || "".equals(phone) || "".equals(direccion)) {
 			direccionreturn="redirect:/resumenpedido";
 		}else {
-			this.servicioPedido.addPedido((Usuario) sesion.getAttribute("usuario"), tipoEnvio,p.getListaproductos(), direccion,
+			
+			this.servicioPedido.addPedido((Usuario) sesion.getAttribute("usuario"), tipoEnvio,this.servicioPedido.getAux(), direccion,
 					email, phone);
 			model.addAttribute("listapedidos",servicioPedido.findPedidosUsuario((Usuario) sesion.getAttribute("usuario")));
 			direccionreturn="redirect:/seleccion/listado";

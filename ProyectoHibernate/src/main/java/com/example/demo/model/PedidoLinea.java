@@ -12,15 +12,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name="PedidoCantidadProducto")
 public class PedidoLinea {
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer lineapedidoId;
 	private Integer cantidad;
 	@ManyToOne
 	private Producto producto;
 	@ManyToOne
 	private Pedido pedido;
-	
 	public PedidoLinea() {
 		super();
 	}
@@ -30,6 +28,7 @@ public class PedidoLinea {
 		this.cantidad = cantidad;
 		this.producto = producto;
 		this.pedido = pedido;
+
 	}
 
 	public Integer getCantidad() {
@@ -49,12 +48,6 @@ public class PedidoLinea {
 	}
 	public void setPedido(Pedido pedido) {
 		this.pedido = pedido;
-	}
-
-	@Override
-	public String toString() {
-		return "PedidoLinea [lineapedidoId=" + lineapedidoId + ", cantidad=" + cantidad + ", producto=" + producto
-				+ ", pedido=" + pedido + "]";
 	}
 	
 	

@@ -28,7 +28,10 @@ public class PedidoServiceDB implements PedidoService {
 	PedidoLineaServiceDB servicioPedidoLinea;
 	
 	private Integer[] cantidades;
+	private List<PedidoLinea> aux=new ArrayList<>();
+
 	
+
 	@Override
 	public Pedido add(Pedido p) {
 		return repositorio.save(p);
@@ -49,12 +52,7 @@ public class PedidoServiceDB implements PedidoService {
 	public Pedido edit(Pedido pedido) {
 		return null;
 	}
-//	public List<Producto> resumenDelPedido(Integer[] cantidades){
-//		List<Producto> listaproductosUnidades = null;
-//		listaproductosUnidades.
-//		
-//		return listaproductosUnidades; 
-//	}
+
 	
 	public Pedido crearPedido(Integer [] cantidades) {
 		List<Producto> productos=repositorioproductos.findAll();
@@ -65,21 +63,27 @@ public class PedidoServiceDB implements PedidoService {
 			linea.setPedido(p);
 			linea.setProducto(productos.get(j));
 		}
-		linea.setPedido(p);
-
-		
 		return p;
 	}
 
 	@Override
-	public void addPedido(Usuario usuario, String tipopedido,ArrayList<PedidoLinea> listaproductos,String direccionentrega,
+	public void addPedido(Usuario usuario, String tipopedido,List<PedidoLinea> listaproductos,String direccionentrega,
 			String emailcontacto,String telefonocontacto) {
-		Pedido p=new Pedido(listaproductos,tipopedido, direccionentrega, emailcontacto,
-			telefonocontacto);
-		repositorio.save(p);
-		usuario.addPedido(p);
+		//aqui iba new pedido
+		Pedido ped=repositorio.getById(id);
+		ped.setListaproductos(listaproductos);
+		ped.setDireccionentrega(direccionentrega);
+		ped.setEmailcontacto(emailcontacto);
+		ped.setTelefonopedido(telefonocontacto);
+		ped.setTipopedido(tipopedido);
+		//Aqui se anade una vez
+		repositorio.save(ped);
+		usuario.addPedido(ped);
+		for (int i = 0; i < listaproductos.size(); i++) {
+			this.servicioPedidoLinea.add(listaproductos.get(i));			
+		}
 	}
-
+	
 	@Override
 	public List<Pedido> findPedidosUsuario(Usuario usuario) {
 		List<Pedido> pedidos;
@@ -87,10 +91,12 @@ public class PedidoServiceDB implements PedidoService {
 		return pedidos;
 	}
 
-	@Override
-	public List<Producto> getListatemporal() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<PedidoLinea> getAux() {
+		return aux;
+	}
+
+	public void setAux(List<PedidoLinea> aux) {
+		this.aux = aux;
 	}
 
 	public Integer[] getCantidades() {
@@ -101,14 +107,16 @@ public class PedidoServiceDB implements PedidoService {
 		this.cantidades = cantidades;
 	}
 	public Pedido crearLinea(Integer [] cantidades,Pedido nuevopedido) {
-		Pedido p=new Pedido();
 		List<Producto> productos=repositorioproductos.findAll();
+		//Aqui se anade pero no se deberia
+		repositorio.save(nuevopedido);
 		for (int i = 0; i < cantidades.length; i++) {
 			PedidoLinea linea=new PedidoLinea(cantidades[i],productos.get(i),nuevopedido);
-			p.addLinea(linea);
+			nuevopedido.addLinea(linea);
+			servicioPedidoLinea.add(linea);
+			
 		}
-		return p;
+		return nuevopedido;
 	}
-
 
 }
