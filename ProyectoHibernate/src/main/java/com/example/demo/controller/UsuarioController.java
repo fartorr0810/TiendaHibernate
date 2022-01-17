@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -60,12 +61,15 @@ public class UsuarioController {
 			return "redirect:/login";
 		}		
 		model.addAttribute("listaproductos",servicioProducto.findAll());
-		model.addAttribute("pedido",new Pedido());
+
 		return "crearpedido";
 	}
-	@PostMapping({"/resumenpedido/submit"})
-	public String crearPedidoProcesado(Model model,@RequestParam(name="numeroproducto")Integer[] cantidades,
-			@ModelAttribute("pedido") Pedido p) {
+	//IGNORE
+	@PostMapping({"/crearpedido/submit"})
+	public String crearPedidoProcesado(Model model,
+			@RequestParam(name="numeroproducto")Integer[] cantidades)
+			{
+	
 		String direccion="";
 		boolean vacio=true;
 		for (int i = 0; i < cantidades.length; i++) {
@@ -76,36 +80,42 @@ public class UsuarioController {
 		if (vacio) {
 			direccion="redirect:/seleccion/crearpedido";
 		}else {
+			model.addAttribute("pedido",new Pedido());
 			Pedido ped=(Pedido) model.getAttribute("pedido");
-			//Persistir pedido
+			model.addAttribute("idpedido",ped.getId());
 			this.servicioPedido.crearLinea(cantidades, ped);
-			model.addAttribute("lineas",ped.getListaproductos());
-			model.addAttribute("usuario",sesion.getAttribute("usuario"));
-			model.addAttribute("nuevopedido",ped);
-			direccion="resumenpedido";
+			direccion="redirect:/resumenpedido/"+ped.getId().toString();
 		}
 		return direccion;
 		}
-//	@GetMapping({"resumenpedido"})
-//	public String resumenDelPedido(Model model,@ModelAttribute("usuario") Pedido pedido) {
-//		if (sesion.getAttribute("usuario")==null) {
-//			return "redirect:/login";			
-//		}
-//		model.addAttribute("usuario",sesion.getAttribute("usuario"));
-//		return "resumenpedido";
-//	}
+	
+	//TODO
+	@GetMapping({"resumenpedido/{id}"})
+	public String finalizarpedido(Model model,
+			@PathVariable Integer id){
+		Pedido ped=servicioPedido.findById(id);
+		model.addAttribute("lineas",ped.getListaproductos());
+		model.addAttribute("usuario",sesion.getAttribute("usuario"));
+
+		
+		return "resumenpedido";
+	}
+	
+	
+	
 	@PostMapping({"seleccion/listado"})
-	public String listarPedidos(Model model, @RequestParam(required=true,value="tipoenvio") String tipoEnvio,
+	public String listarPedidos(Model model, 
+			//@RequestParam(required=true,value="tipoenvio") String tipoEnvio,
 			@RequestParam(required=false,value="email") String email,
 			@RequestParam(required=false,value="telefono") String phone,
 			@RequestParam(required=false,value="direccion") String direccion,
-			@ModelAttribute("nuevopedido") Pedido ped) {
+			@ModelAttribute("pedido") Pedido ped) {
 		String direccionreturn="";
 		if ("".equals(email) || "".equals(phone) || "".equals(direccion)) {
 			direccionreturn="redirect:/resumenpedido";
 		}else {
 			
-			this.servicioPedido.addPedido((Usuario) sesion.getAttribute("usuario"), tipoEnvio,this.servicioPedido.getAux(), direccion,
+			this.servicioPedido.addPedido((Usuario) sesion.getAttribute("usuario"), "Normal",this.servicioPedido.getAux(), direccion,
 					email, phone);
 			model.addAttribute("listapedidos",servicioPedido.findPedidosUsuario((Usuario) sesion.getAttribute("usuario")));
 			direccionreturn="redirect:/seleccion/listado";

@@ -9,7 +9,7 @@
 </head>
 <body>
 <header th:insert="cabecera::cabecera"></header>
-	<form action="#" th:action="@{/seleccion/listado}" method="post">
+	<form action="#" th:action="@{/seleccion/listado}" method="post" th:object="${pedido}">
 	<table>
 		<caption>Listado del pedido</caption>
 	  <thead>
@@ -55,9 +55,8 @@
 	  </thead>
 	  <tbody>
 		<tr>
-		<td><input type="radio" name="tipoenvio" value="Express"/>Express</td>
-		<td><input type="radio" name="tipoenvio" value="Normal" checked/>Normal</td>
-		<td><input type="radio" name="tipoenvio" value="En Tienda"/>Tienda</td>
+		<h5>Elige tu tipo de envio (EXPRESS,NORMAL,EN TIENDA)</h5>
+<!--	<td><input type="text" name="tipoenvio" th:field="*{tipopedido}" value="Express"/></td> -->
 		</tr>
 	</table>
 		<input type="submit" value="Enviar"/>

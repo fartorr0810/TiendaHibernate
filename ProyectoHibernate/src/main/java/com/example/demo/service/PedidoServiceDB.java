@@ -70,12 +70,7 @@ public class PedidoServiceDB implements PedidoService {
 	public void addPedido(Usuario usuario, String tipopedido,List<PedidoLinea> listaproductos,String direccionentrega,
 			String emailcontacto,String telefonocontacto) {
 		//aqui iba new pedido
-		Pedido ped=repositorio.getById(id);
-		ped.setListaproductos(listaproductos);
-		ped.setDireccionentrega(direccionentrega);
-		ped.setEmailcontacto(emailcontacto);
-		ped.setTelefonopedido(telefonocontacto);
-		ped.setTipopedido(tipopedido);
+		Pedido ped=new Pedido(listaproductos,tipopedido,direccionentrega,emailcontacto,telefonocontacto);
 		//Aqui se anade una vez
 		repositorio.save(ped);
 		usuario.addPedido(ped);
@@ -117,6 +112,11 @@ public class PedidoServiceDB implements PedidoService {
 			
 		}
 		return nuevopedido;
+	}
+
+	@Override
+	public Pedido findById(Integer id) {
+		return repositorio.getById(id);
 	}
 
 }
