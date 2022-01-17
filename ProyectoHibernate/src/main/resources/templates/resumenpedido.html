@@ -56,7 +56,10 @@
 	  <tbody>
 		<tr>
 		<h5>Elige tu tipo de envio (EXPRESS,NORMAL,EN TIENDA)</h5>
-<!--	<td><input type="text" name="tipoenvio" th:field="*{tipopedido}" value="Express"/></td> -->
+		<tr>
+		<td><input type="radio" name="tipoenvio" value="Express"/>Express</td>
+		<td><input type="radio" name="tipoenvio" value="Normal" checked/>Normal</td>
+		<td><input type="radio" name="tipoenvio" value="En Tienda"/>Tienda</td>
 		</tr>
 	</table>
 		<input type="submit" value="Enviar"/>

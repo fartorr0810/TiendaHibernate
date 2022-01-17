@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,6 @@ public class UsuarioServiceDB implements UsuarioService{
 		
 		return usuariocorrecto;
 	}
-//TODO Cambiar el For por While
 	@Override
 	public boolean findUser(Usuario usuario) {
 		List<Usuario> listausuarios=repositorio.findAll();

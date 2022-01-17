@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -29,8 +28,9 @@ public class PedidoServiceDB implements PedidoService {
 	
 	private Integer[] cantidades;
 	private List<PedidoLinea> aux=new ArrayList<>();
-
+	private Integer auxid;
 	
+
 
 	@Override
 	public Pedido add(Pedido p) {
@@ -65,20 +65,14 @@ public class PedidoServiceDB implements PedidoService {
 		}
 		return p;
 	}
-
-	@Override
-	public void addPedido(Usuario usuario, String tipopedido,List<PedidoLinea> listaproductos,String direccionentrega,
-			String emailcontacto,String telefonocontacto) {
-		//aqui iba new pedido
-		Pedido ped=new Pedido(listaproductos,tipopedido,direccionentrega,emailcontacto,telefonocontacto);
-		//Aqui se anade una vez
+	public void terminarPedido(Usuario usuario,Pedido ped) {
 		repositorio.save(ped);
 		usuario.addPedido(ped);
-		for (int i = 0; i < listaproductos.size(); i++) {
-			this.servicioPedidoLinea.add(listaproductos.get(i));			
+		for (int i = 0; i < ped.getListaproductos().size(); i++) {
+			this.servicioPedidoLinea.add(ped.getListaproductos().get(i));			
 		}
+		
 	}
-	
 	@Override
 	public List<Pedido> findPedidosUsuario(Usuario usuario) {
 		List<Pedido> pedidos;
@@ -109,8 +103,8 @@ public class PedidoServiceDB implements PedidoService {
 			PedidoLinea linea=new PedidoLinea(cantidades[i],productos.get(i),nuevopedido);
 			nuevopedido.addLinea(linea);
 			servicioPedidoLinea.add(linea);
-			
 		}
+		this.setAuxid(nuevopedido.getId());
 		return nuevopedido;
 	}
 
@@ -119,4 +113,11 @@ public class PedidoServiceDB implements PedidoService {
 		return repositorio.getById(id);
 	}
 
+	public Integer getAuxid() {
+		return auxid;
+	}
+
+	public void setAuxid(Integer auxid) {
+		this.auxid = auxid;
+	}
 }
