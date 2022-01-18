@@ -13,6 +13,7 @@
 	<table>
 		<caption>Listado del pedido</caption>
 	  <thead>
+		<input type="text" name="idpedido" th:value="${pedido.getId()}" th:attrappend="readonly=${pedido.getId()>0}"/>
 	    <tr>
 	      <th id="id">Producto</th>
 	      <th id="name">Precio</th>

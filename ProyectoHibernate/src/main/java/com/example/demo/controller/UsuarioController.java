@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.model.Pedido;
 import com.example.demo.model.Usuario;
+import com.example.demo.service.PedidoLineaServiceDB;
 import com.example.demo.service.PedidoServiceDB;
 import com.example.demo.service.ProductoServiceDB;
 import com.example.demo.service.UsuarioServiceDB;
@@ -29,6 +30,8 @@ public class UsuarioController {
 	private ProductoServiceDB servicioProducto;
 	@Autowired
 	private PedidoServiceDB servicioPedido;
+	@Autowired
+	private PedidoLineaServiceDB servicioPedidoLinea;
 	
 	private static final String USUARIO="usuario";
 	private static final String REDIRECTLOGIN="redirect:/login";
@@ -107,14 +110,15 @@ public class UsuarioController {
 			@RequestParam(required=true,value="tipoenvio") String tipoEnvio,
 			@RequestParam(required=false,value="email") String email,
 			@RequestParam(required=false,value="telefono") String phone,
-			@RequestParam(required=false,value="direccion") String direccion
+			@RequestParam(required=false,value="direccion") String direccion,
+			@RequestParam(required=true,value="idpedido") Integer id
 			) {
 		
 		String direccionreturn="";
 		if ("".equals(email) || "".equals(phone) || "".equals(direccion)) {
 			direccionreturn="redirect:/resumenpedido";
 		}else {
-			Pedido ped=servicioPedido.findById(servicioPedido.getAuxid());
+			Pedido ped=servicioPedido.findById(id);
 			ped.setDireccionentrega(direccion);
 			ped.setEmailcontacto(email);
 			ped.setTelefonopedido(phone);
@@ -132,5 +136,46 @@ public class UsuarioController {
 		}
 		model.addAttribute(LISTAPEDIDOS,servicioPedido.findPedidosUsuario((Usuario) sesion.getAttribute(USUARIO)));
 		return LISTAPEDIDOS;
+	}
+	
+	//Editar pedidos
+	@GetMapping({"/pedido/editarpedido/{idpedido}"})
+	public String editarPedido(@PathVariable Integer idpedido,Model model) {
+		String direccion="";
+		if (sesion.getAttribute(USUARIO)==null) {
+			direccion=REDIRECTLOGIN;
+		}else {
+			Pedido pedido=this.servicioPedido.findById(idpedido);
+			model.addAttribute(PEDIDO,pedido);
+			model.addAttribute("listaproductos",this.servicioProducto.findAll());
+			model.addAttribute("cantidades",this.servicioPedidoLinea.findById());
+			direccion="editarpedido";
+		}
+		return direccion;
+	}
+	/**
+	 * Metodo para editar pedido, al momento de submit llama al metodo edit y recibe los parametros de id
+	 * , el usuario y las nuevas cantidades de cada producto
+	 * @param cantidades cantidad de productos de cada uno
+	 * @param idpedido id del pedido que se va editar
+	 * @return te redirecciona a la lista de pedidos del usuario
+	 */
+	@PostMapping({"/editarpedido/submit"})
+	public String editarPedidoFinalizar(@RequestParam(required=false,value="cantidades")Integer[] cantidades,
+			@RequestParam(required=false,value="idpedido")Integer idpedido, Model model) {
+		//this.serviciopedido.editarPedido(idpedido, (Usuario) sesion.getAttribute(USUARIO), cantidades);
+		
+		return "redirect:/seleccion/listapedidos";
+	}
+	
+	/**
+	 * Metodo que se dispara al cerrar sesion y nos invalida la sesio, tras ello nos envia
+	 * a al login.
+	 * @return te devuelve al login
+	 */
+	@PostMapping({"/login/logout"})
+	public String cerrarSesion(Model model) {
+		sesion.invalidate();
+		return REDIRECTLOGIN;
 	}
 }

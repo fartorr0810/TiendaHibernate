@@ -53,6 +53,11 @@ public class UsuarioServiceDB implements UsuarioService{
 		}
 		return encontrado;
 	}
-
+	public Usuario edit(Usuario usuario) {
+		Usuario aux=findById(usuario.getId());
+		aux.setListapedidios(usuario.getListapedidios());
+		return repositorio.save(aux);
+		
+	}
 	
 }

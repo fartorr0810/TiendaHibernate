@@ -1,7 +1,5 @@
 package com.example.demo.service;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -15,6 +13,7 @@ import com.example.demo.model.Producto;
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.PedidoRepository;
 import com.example.demo.repository.ProductoRepository;
+import com.example.demo.repository.UsuarioRepository;
 @Primary
 @Service("pedidoServiceDB")
 public class PedidoServiceDB implements PedidoService {
@@ -25,13 +24,10 @@ public class PedidoServiceDB implements PedidoService {
 	ProductoRepository repositorioproductos;
 	@Autowired
 	PedidoLineaServiceDB servicioPedidoLinea;
-	
-	private Integer[] cantidades;
-	private List<PedidoLinea> aux=new ArrayList<>();
-	private Integer auxid;
-	
-
-
+	@Autowired
+	UsuarioServiceDB servicioUsuario;
+	@Autowired
+	UsuarioRepository repositoriousuarios;
 	@Override
 	public Pedido add(Pedido p) {
 		return repositorio.save(p);
@@ -71,7 +67,8 @@ public class PedidoServiceDB implements PedidoService {
 		for (int i = 0; i < ped.getListaproductos().size(); i++) {
 			this.servicioPedidoLinea.add(ped.getListaproductos().get(i));			
 		}
-		
+		this.servicioUsuario.edit(usuario);
+
 	}
 	@Override
 	public List<Pedido> findPedidosUsuario(Usuario usuario) {
@@ -80,31 +77,15 @@ public class PedidoServiceDB implements PedidoService {
 		return pedidos;
 	}
 
-	public List<PedidoLinea> getAux() {
-		return aux;
-	}
 
-	public void setAux(List<PedidoLinea> aux) {
-		this.aux = aux;
-	}
-
-	public Integer[] getCantidades() {
-		return cantidades;
-	}
-
-	public void setCantidades(Integer[] cantidades) {
-		this.cantidades = cantidades;
-	}
 	public Pedido crearLinea(Integer [] cantidades,Pedido nuevopedido) {
 		List<Producto> productos=repositorioproductos.findAll();
-		//Aqui se anade pero no se deberia
 		repositorio.save(nuevopedido);
 		for (int i = 0; i < cantidades.length; i++) {
 			PedidoLinea linea=new PedidoLinea(cantidades[i],productos.get(i),nuevopedido);
 			nuevopedido.addLinea(linea);
 			servicioPedidoLinea.add(linea);
 		}
-		this.setAuxid(nuevopedido.getId());
 		return nuevopedido;
 	}
 
@@ -113,11 +94,4 @@ public class PedidoServiceDB implements PedidoService {
 		return repositorio.getById(id);
 	}
 
-	public Integer getAuxid() {
-		return auxid;
-	}
-
-	public void setAuxid(Integer auxid) {
-		this.auxid = auxid;
-	}
 }
