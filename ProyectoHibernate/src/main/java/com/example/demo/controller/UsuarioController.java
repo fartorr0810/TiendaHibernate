@@ -118,12 +118,15 @@ public class UsuarioController {
 		if ("".equals(email) || "".equals(phone) || "".equals(direccion)) {
 			direccionreturn="redirect:/resumenpedido";
 		}else {
+			Usuario usuario=(Usuario) sesion.getAttribute(USUARIO);
 			Pedido ped=servicioPedido.findById(id);
 			ped.setDireccionentrega(direccion);
 			ped.setEmailcontacto(email);
 			ped.setTelefonopedido(phone);
 			ped.setTipopedido(tipoEnvio);
-			this.servicioPedido.terminarPedido((Usuario) sesion.getAttribute(USUARIO), ped);
+			usuario.addPedido(ped);
+			this.servicioPedido.terminarPedido(usuario, ped);
+			
 			model.addAttribute(LISTAPEDIDOS,servicioPedido.findPedidosUsuario((Usuario) sesion.getAttribute(USUARIO)));
 			direccionreturn="redirect:/seleccion/listado";
 		}
@@ -148,7 +151,7 @@ public class UsuarioController {
 			Pedido pedido=this.servicioPedido.findById(idpedido);
 			model.addAttribute(PEDIDO,pedido);
 			model.addAttribute("listaproductos",this.servicioProducto.findAll());
-			model.addAttribute("cantidades",this.servicioPedidoLinea.findById());
+			model.addAttribute("cantidades",this.servicioPedidoLinea.findById(idpedido));
 			direccion="editarpedido";
 		}
 		return direccion;
@@ -164,9 +167,47 @@ public class UsuarioController {
 	public String editarPedidoFinalizar(@RequestParam(required=false,value="cantidades")Integer[] cantidades,
 			@RequestParam(required=false,value="idpedido")Integer idpedido, Model model) {
 		//this.serviciopedido.editarPedido(idpedido, (Usuario) sesion.getAttribute(USUARIO), cantidades);
-		
-		return "redirect:/seleccion/listapedidos";
+		boolean vacio=true;
+		String direccionreturn;
+		for (int i = 0; i < cantidades.length; i++) {
+			if (cantidades[i]!=null) {
+				vacio=false;	
+			}
+		}
+		if (vacio) {
+			direccionreturn="redirect:/seleccion/listado";
+		}else {
+			Usuario usuario=(Usuario) sesion.getAttribute("usuario");
+			this.servicioUsuario.edit(usuario);
+			Pedido ped=this.servicioPedido.findById(idpedido);
+			ped=this.servicioPedido.updatePedido(usuario,idpedido,cantidades);
+			this.servicioPedido.edit(ped);
+		}
+		return "redirect:/seleccion/listado";
 	}
+	
+	@GetMapping({"/borrarpedido/{id}"})
+	public String eliminarPedido(@PathVariable Integer id) {
+		String direccionreturn;
+		if (sesion.getAttribute(USUARIO)==null) {
+			direccionreturn=REDIRECTLOGIN;
+		}else {
+			Usuario usuario=(Usuario) sesion.getAttribute("usuario");
+			Pedido pedido=this.servicioPedido.findById(id);
+			usuario.getListapedidios().remove(pedido);
+			this.servicioUsuario.edit(usuario);
+			this.servicioPedido.borrar(pedido);
+		}
+		return "redirect:/seleccion/listado";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * Metodo que se dispara al cerrar sesion y nos invalida la sesio, tras ello nos envia

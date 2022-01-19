@@ -1,7 +1,11 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-
+import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -11,6 +15,7 @@ import com.example.demo.model.Pedido;
 import com.example.demo.model.PedidoLinea;
 import com.example.demo.model.Producto;
 import com.example.demo.model.Usuario;
+import com.example.demo.repository.PedidoLineaRepository;
 import com.example.demo.repository.PedidoRepository;
 import com.example.demo.repository.ProductoRepository;
 import com.example.demo.repository.UsuarioRepository;
@@ -22,6 +27,8 @@ public class PedidoServiceDB implements PedidoService {
 	PedidoRepository repositorio;
 	@Autowired
 	ProductoRepository repositorioproductos;
+	@Autowired
+	PedidoLineaRepository repositorioPedidoLinea;
 	@Autowired
 	PedidoLineaServiceDB servicioPedidoLinea;
 	@Autowired
@@ -46,7 +53,7 @@ public class PedidoServiceDB implements PedidoService {
 
 	@Override
 	public Pedido edit(Pedido pedido) {
-		return null;
+		return repositorio.save(pedido);
 	}
 
 	
@@ -63,7 +70,6 @@ public class PedidoServiceDB implements PedidoService {
 	}
 	public void terminarPedido(Usuario usuario,Pedido ped) {
 		repositorio.save(ped);
-		usuario.addPedido(ped);
 		for (int i = 0; i < ped.getListaproductos().size(); i++) {
 			this.servicioPedidoLinea.add(ped.getListaproductos().get(i));			
 		}
@@ -94,4 +100,31 @@ public class PedidoServiceDB implements PedidoService {
 		return repositorio.getById(id);
 	}
 
+	public Pedido updatePedido(Usuario usuario,Integer idpedido,Integer[] cantidades) {
+		boolean encontrado=false;
+		Iterator<Pedido> it = usuario.getListapedidios().iterator();
+		while(it.hasNext() && !encontrado) {
+			Pedido pedido = it.next();
+			if(Objects.equals(pedido.getId(), idpedido)) {
+				Pedido ped=findById(idpedido);
+				ped.getListaproductos();
+				Map<Producto,Integer>editado= new HashMap<>();
+				List<Producto>productos = repositorioproductos.findAll();
+				for(int i=0; i<cantidades.length;i++) {
+					
+					editado.put(productos.get(i), cantidades[i]);
+				}
+				encontrado = true;
+			}
+		}
+		return null;
+	}
+	public void borrar(Pedido e) {
+		Iterator<PedidoLinea> it = e.getListaproductos().iterator();
+		while(it.hasNext()) {
+			PedidoLinea linea = it.next();
+			this.repositorioPedidoLinea.delete(linea);
+		}
+		repositorio.delete(e);
+	}
 }

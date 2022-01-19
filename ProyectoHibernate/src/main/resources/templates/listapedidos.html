@@ -32,6 +32,8 @@
 			<td th:text="${pedido.getEmailcontacto()}"></td>
 			<td th:text="${pedido.getTipopedido()}"></td>
 			<td><a th:href="@{/pedido/editarpedido/{id}(id=${pedido.id})}">Editar</a></td>
+			<td><a th:href="@{/borrarpedido/{id}(id=${pedido.id})}">Eliminar Pedido</a></td>
+			
 		</tr>
 	</tbody>
 	</table>

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -23,7 +24,7 @@ public class Pedido {
 	private Integer id;
 	@ElementCollection
 	@CollectionTable(name="ListaProductos", joinColumns = @JoinColumn(name="Productos_id"))
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<PedidoLinea> listalineas;
 	private String tipopedido;
 	private Date fechapedido;

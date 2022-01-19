@@ -1,7 +1,9 @@
 package com.example.demo.model;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,7 +18,7 @@ public class PedidoLinea {
 	private Integer cantidad;
 	@ManyToOne
 	private Producto producto;
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	private Pedido pedido;
 	public PedidoLinea() {
 		super();

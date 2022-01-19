@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,7 +24,7 @@ public class Usuario {
 	@Email
 	private String email;
 	private String telefono;
-	@OneToMany(//cascade = CascadeType.ALL, orphanRemoval = true
+	@OneToMany(cascade =CascadeType.ALL, orphanRemoval = true,
 			fetch=FetchType.EAGER)
 	private List<Pedido> listapedidios=new ArrayList<>();
 	

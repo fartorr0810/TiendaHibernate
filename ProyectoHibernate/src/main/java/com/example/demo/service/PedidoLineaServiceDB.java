@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -27,9 +28,14 @@ public class PedidoLineaServiceDB implements PedidoLineaService {
 	public List<PedidoLinea> findAll() {
 		return repositorio.findAll();
 	}
-	public List<PedidoLinea> BuscarById(Pedido ped){
-		List<PedidoLinea> linea=repositorio.findById(ped.getId());
+	public Optional<PedidoLinea> BuscarById(Pedido ped){
+		Optional<PedidoLinea> linea=findById(ped.getId());
 		return linea;
+	}
+
+	@Override
+	public Optional<PedidoLinea> findById(Integer id) {
+		return repositorio.findById(id);
 	}
 
 
