@@ -39,7 +39,13 @@ public class PedidoServiceDB implements PedidoService {
 	public Pedido add(Pedido p) {
 		return repositorio.save(p);
 	}
-
+	public Integer addNumber(Pedido p) {
+		repositorio.save(p);
+		return p.getId();
+	}
+	public Pedido crearPedidoVacio() {
+		return new Pedido();
+	}
 	@Override
 	public List<Pedido> findAll() {
 		return repositorio.findAll();
@@ -73,7 +79,7 @@ public class PedidoServiceDB implements PedidoService {
 		for (int i = 0; i < ped.getListaproductos().size(); i++) {
 			this.servicioPedidoLinea.add(ped.getListaproductos().get(i));			
 		}
-		this.servicioUsuario.edit(usuario);
+		this.servicioUsuario.addPedido(usuario, ped);
 
 	}
 	@Override
@@ -84,20 +90,20 @@ public class PedidoServiceDB implements PedidoService {
 	}
 
 
-	public Pedido crearLinea(Integer [] cantidades,Pedido nuevopedido) {
+	public Pedido crearLinea(Integer [] cantidades,Pedido nuevopedido,Usuario usuario) {
 		List<Producto> productos=repositorioproductos.findAll();
 		repositorio.save(nuevopedido);
 		for (int i = 0; i < cantidades.length; i++) {
 			PedidoLinea linea=new PedidoLinea(cantidades[i],productos.get(i),nuevopedido);
-			nuevopedido.addLinea(linea);
 			servicioPedidoLinea.add(linea);
+			nuevopedido.addLinea(linea);
 		}
 		return nuevopedido;
 	}
 
 	@Override
 	public Pedido findById(Integer id) {
-		return repositorio.getById(id);
+		return repositorio.findById(id).orElse(null);
 	}
 
 	public Pedido updatePedido(Usuario usuario,Integer idpedido,Integer[] cantidades) {

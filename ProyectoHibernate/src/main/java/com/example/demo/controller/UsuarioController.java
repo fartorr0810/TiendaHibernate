@@ -84,10 +84,12 @@ public class UsuarioController {
 		if (vacio) {
 			direccion="redirect:/seleccion/crearpedido";
 		}else {
-			model.addAttribute(PEDIDO,new Pedido());
-			Pedido ped=(Pedido) model.getAttribute(PEDIDO);
-			this.servicioPedido.crearLinea(cantidades, ped);
-			direccion="redirect:/resumenpedido/"+ped.getId().toString();
+			//Revisar
+			Usuario usuario=(Usuario) sesion.getAttribute(USUARIO);
+			Pedido ped=this.servicioPedido.crearPedidoVacio();
+			ped=this.servicioPedido.crearLinea(cantidades, ped,usuario);
+			Integer idpedido=this.servicioPedido.addNumber(ped);
+			direccion="redirect:/resumenpedido/"+idpedido;
 		}
 		return direccion;
 		}
@@ -119,13 +121,15 @@ public class UsuarioController {
 			direccionreturn="redirect:/resumenpedido";
 		}else {
 			Usuario usuario=(Usuario) sesion.getAttribute(USUARIO);
+			Usuario aux=this.servicioUsuario.findById(usuario.getId());
 			Pedido ped=servicioPedido.findById(id);
 			ped.setDireccionentrega(direccion);
 			ped.setEmailcontacto(email);
 			ped.setTelefonopedido(phone);
 			ped.setTipopedido(tipoEnvio);
 			usuario.addPedido(ped);
-			this.servicioPedido.terminarPedido(usuario, ped);
+			this.servicioPedido.edit(ped);
+			this.servicioUsuario.edit(usuario);
 			
 			model.addAttribute(LISTAPEDIDOS,servicioPedido.findPedidosUsuario((Usuario) sesion.getAttribute(USUARIO)));
 			direccionreturn="redirect:/seleccion/listado";
@@ -134,10 +138,13 @@ public class UsuarioController {
 	}
 	@GetMapping({"seleccion/listado"})
 	public String listadoDePedidos(Model model) {
+		Usuario usuario=(Usuario) sesion.getAttribute(USUARIO);
 		if (sesion.getAttribute(USUARIO)==null) {
-			return REDIRECTLOGIN;			
+			return REDIRECTLOGIN;
+		}else {
+			Usuario aux=this.servicioUsuario.findById(usuario.getId());
 		}
-		model.addAttribute(LISTAPEDIDOS,servicioPedido.findPedidosUsuario((Usuario) sesion.getAttribute(USUARIO)));
+		model.addAttribute(LISTAPEDIDOS,servicioPedido.findPedidosUsuario(usuario));
 		return LISTAPEDIDOS;
 	}
 	
@@ -193,6 +200,7 @@ public class UsuarioController {
 			direccionreturn=REDIRECTLOGIN;
 		}else {
 			Usuario usuario=(Usuario) sesion.getAttribute("usuario");
+			Usuario user=this.servicioUsuario.findById(usuario.getId());
 			Pedido pedido=this.servicioPedido.findById(id);
 			usuario.getListapedidios().remove(pedido);
 			this.servicioUsuario.edit(usuario);
@@ -200,14 +208,6 @@ public class UsuarioController {
 		}
 		return "redirect:/seleccion/listado";
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * Metodo que se dispara al cerrar sesion y nos invalida la sesio, tras ello nos envia

@@ -16,7 +16,7 @@ public class PedidoLinea {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer lineapedidoId;
 	private Integer cantidad;
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	private Producto producto;
 	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	private Pedido pedido;

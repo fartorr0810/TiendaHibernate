@@ -21,7 +21,6 @@ public class Usuario {
 	private String username;
 	private String password;
 	private String direccion;
-	@Email
 	private String email;
 	private String telefono;
 	@OneToMany(cascade =CascadeType.ALL, orphanRemoval = true,

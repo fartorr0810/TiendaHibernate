@@ -22,9 +22,7 @@ import javax.persistence.Table;
 public class Pedido {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
-	@ElementCollection
-	@CollectionTable(name="ListaProductos", joinColumns = @JoinColumn(name="Productos_id"))
-    @OneToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER,orphanRemoval = true)
 	private List<PedidoLinea> listalineas;
 	private String tipopedido;
 	private Date fechapedido;

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.model.Pedido;
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.UsuarioRepository;
 @Primary
@@ -14,7 +15,6 @@ public class UsuarioServiceDB implements UsuarioService{
 
 	@Autowired
 	private UsuarioRepository repositorio;
-	
 	@Override
 	public Usuario add(Usuario user) {
 		return repositorio.save(user);
@@ -58,6 +58,10 @@ public class UsuarioServiceDB implements UsuarioService{
 		aux.setListapedidios(usuario.getListapedidios());
 		return repositorio.save(aux);
 		
+	}
+	public void addPedido(Usuario usuario,Pedido ped) {
+		usuario.addPedido(ped);
+		this.repositorio.save(usuario);
 	}
 	
 }
