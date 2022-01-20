@@ -38,6 +38,7 @@ public class UsuarioController {
 	private static final String REDIRECTLOGIN="redirect:/login";
 	private static final String PEDIDO="pedido";
 	private static final String LISTAPEDIDOS="listapedidos";
+	private static final String REDIRECTLISTAPEDIDOS="redirect:/seleccion/listado";
 
 
 	/**
@@ -118,11 +119,15 @@ public class UsuarioController {
 		if (vacio) {
 			direccion="redirect:/seleccion/crearpedido";
 		}else {
-			Usuario usuario=(Usuario) sesion.getAttribute(USUARIO);
-			Pedido ped=this.servicioPedido.crearPedidoVacio();
-			ped=this.servicioPedido.crearLinea(cantidades, ped);
-			Integer idpedido=this.servicioPedido.addNumber(ped);
-			direccion="redirect:/resumenpedido/"+idpedido;
+			if (sesion.getAttribute(USUARIO)==null) {
+				direccion=REDIRECTLOGIN;
+			}else {
+				Pedido ped=this.servicioPedido.crearPedidoVacio();
+				ped=this.servicioPedido.crearLinea(cantidades, ped);
+				Integer idpedido=this.servicioPedido.addNumber(ped);
+				direccion="redirect:/resumenpedido/"+idpedido;
+			}
+	
 		}
 		return direccion;
 		}
@@ -137,12 +142,18 @@ public class UsuarioController {
 	@GetMapping({"resumenpedido/{id}"})
 	public String finalizarpedido(Model model,
 			@PathVariable Integer id){
-		Pedido ped=servicioPedido.findById(id);
-		model.addAttribute("lineas",ped.getListaproductos());
-		model.addAttribute(USUARIO,sesion.getAttribute(USUARIO));
-		model.addAttribute("idpedido",id);
-		model.addAttribute(PEDIDO,ped);
-		return "resumenpedido";
+		String direccionreturn="";
+		if (sesion.getAttribute(USUARIO)==null || sesion.isNew()) {
+			direccionreturn= REDIRECTLOGIN;
+		}else {
+			Pedido ped=servicioPedido.findById(id);
+			model.addAttribute("lineas",ped.getListaproductos());
+			model.addAttribute(USUARIO,sesion.getAttribute(USUARIO));
+			model.addAttribute("idpedido",id);
+			model.addAttribute(PEDIDO,ped);
+			direccionreturn="resumenpedido";
+		}
+		return direccionreturn;
 	}
 	/**
 	 * Metodo en el que  primero se ve que los datos no estan vacio, en caso de que algun campo
@@ -182,7 +193,7 @@ public class UsuarioController {
 			this.servicioPedido.edit(ped);
 			this.servicioUsuario.edit(usuario);
 			model.addAttribute(LISTAPEDIDOS,servicioPedido.findPedidosUsuario((Usuario) sesion.getAttribute(USUARIO)));
-			direccionreturn="redirect:/seleccion/listado";
+			direccionreturn=REDIRECTLISTAPEDIDOS;
 		}
 		return direccionreturn;
 	}
@@ -248,15 +259,15 @@ public class UsuarioController {
 			}
 		}
 		if (vacio) {
-			direccionreturn="redirect:/seleccion/listado";
+			direccionreturn=REDIRECTLISTAPEDIDOS;
 		}else {
-			Usuario usuario=(Usuario) sesion.getAttribute("usuario");
+			Usuario usuario=(Usuario) sesion.getAttribute(USUARIO);
 			this.servicioUsuario.edit(usuario);
 			Pedido ped=this.servicioPedido.findById(idpedido);
 			ped=this.servicioPedido.updatePedido(ped,cantidades);
 			this.servicioPedido.edit(ped);
 		}
-		return "redirect:/seleccion/listado";
+		return REDIRECTLISTAPEDIDOS;
 	}
 	/**
 	 * Metodo para eliminar pedido , recibe la id del pedido desde el boton para eliminar pedido.
@@ -273,12 +284,12 @@ public class UsuarioController {
 		if (sesion.getAttribute(USUARIO)==null) {
 			direccionreturn=REDIRECTLOGIN;
 		}else {
-			Usuario usuario=(Usuario) sesion.getAttribute("usuario");
+			Usuario usuario=(Usuario) sesion.getAttribute(USUARIO);
 			Pedido pedido=this.servicioPedido.findById(id);
 			usuario.getListapedidios().remove(pedido);
 			this.servicioUsuario.edit(usuario);
 			this.servicioPedido.borrar(pedido);
-			direccionreturn="redirect:/seleccion/listado";
+			direccionreturn=REDIRECTLISTAPEDIDOS;
 		}
 		return direccionreturn;
 	}

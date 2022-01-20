@@ -3,7 +3,7 @@ package com.example.demo.service;
 import java.util.List;
 
 import com.example.demo.model.Usuario;
-
+//Interfaz con metodos genericos
 public interface UsuarioService {
 	public Usuario add(Usuario user);
 	public List<Usuario> findAll();
