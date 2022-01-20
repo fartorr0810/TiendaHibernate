@@ -16,29 +16,30 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
+//Entidad usuario
 @Entity
 @Table(name="Pedidos")
 public class Pedido {
+	//Id Autogenerada
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+	//Relacion de un pedido tiene varias lineas.
     @OneToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER,orphanRemoval = true)
 	private List<PedidoLinea> listalineas;
+    //Datos del pedido
 	private String tipopedido;
 	private Date fechapedido;
 	private String direccionentrega;
 	private String emailcontacto;
-
 	private String telefonopedido;
 	
-
+	//Constructor donde inicializa la lista  y la fecha actual del pedido
 	public Pedido() {
 		super();
 		this.listalineas=new ArrayList<>();
 		this.fechapedido=new Date();
 
-	}
-	
+	}	
 	public Pedido(List<PedidoLinea> listaproductos, String tipopedido, Date fechapedido, String direccionentrega,
 			String emailcontacto, String telefonopedido) {
 		super();
@@ -63,7 +64,7 @@ public class Pedido {
 		super();
 		this.listalineas = listaproductos;
 	}
-
+	//	Getters y Setters
 	public Integer getId() {
 		return id;
 	}
@@ -109,6 +110,7 @@ public class Pedido {
 	public void setTelefonopedido(String telefonopedido) {
 		this.telefonopedido = telefonopedido;
 	}
+	//HashCode y equals
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

@@ -7,15 +7,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
+//Tabla Producto
 @Entity
 @Table(name="Productos")
 public class Producto {
+	//Id autogenerada
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+	//Atributos del producto
 	private Integer id;
 	private String nombre;
 	private Double precio;
-	
+	//Constructores
 	public Producto() {
 		super();
 	}
@@ -26,7 +28,7 @@ public class Producto {
 		this.precio = precio;
 	}
 
-
+	//Getters y Setters
 	public Integer getId() {
 		return id;
 	}
@@ -45,7 +47,7 @@ public class Producto {
 	public void setPrecio(Double precio) {
 		this.precio = precio;
 	}
-
+	//HashCode y Equals
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

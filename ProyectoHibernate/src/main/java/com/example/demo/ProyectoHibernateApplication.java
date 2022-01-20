@@ -18,6 +18,9 @@ public class ProyectoHibernateApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ProyectoHibernateApplication.class, args);
 	}
+	/**
+	 * Metodo para precargar usuarios y productos en la base de datos.
+	 */
 	@Bean
 	CommandLineRunner initData(UsuarioRepository repositoriousuarios,ProductoRepository repositorioproductos) {
 		return (args)-> {

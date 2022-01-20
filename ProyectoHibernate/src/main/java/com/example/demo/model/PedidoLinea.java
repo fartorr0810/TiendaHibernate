@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 
+import java.util.Objects;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,17 +11,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
+//Entidad PedidoLinea
 @Entity
 @Table(name="PedidoCantidadProducto")
 public class PedidoLinea {
+	//Id autogenerada
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer lineapedidoId;
 	private Integer cantidad;
+	//Un producto puede estar en la lineas y pilla la id del producto
 	@ManyToOne(fetch=FetchType.EAGER)
 	private Producto producto;
+	//Un pedido tiene varias lineas y pilla la id del pedido
 	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	private Pedido pedido;
+	//Constructor
 	public PedidoLinea() {
 		super();
 	}
@@ -31,7 +37,7 @@ public class PedidoLinea {
 		this.pedido = pedido;
 
 	}
-
+//	Getters y Setters
 	public Integer getCantidad() {
 		return cantidad;
 	}
@@ -49,6 +55,23 @@ public class PedidoLinea {
 	}
 	public void setPedido(Pedido pedido) {
 		this.pedido = pedido;
+	}
+//HashCode y Equals
+	@Override
+	public int hashCode() {
+		return Objects.hash(lineapedidoId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PedidoLinea other = (PedidoLinea) obj;
+		return Objects.equals(lineapedidoId, other.lineapedidoId);
 	}
 	
 	

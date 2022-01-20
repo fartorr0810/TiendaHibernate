@@ -1,10 +1,8 @@
 package com.example.demo.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +88,7 @@ public class PedidoServiceDB implements PedidoService {
 	}
 
 
-	public Pedido crearLinea(Integer [] cantidades,Pedido nuevopedido,Usuario usuario) {
+	public Pedido crearLinea(Integer [] cantidades,Pedido nuevopedido) {
 		List<Producto> productos=repositorioproductos.findAll();
 		repositorio.save(nuevopedido);
 		for (int i = 0; i < cantidades.length; i++) {
@@ -106,24 +104,15 @@ public class PedidoServiceDB implements PedidoService {
 		return repositorio.findById(id).orElse(null);
 	}
 
-	public Pedido updatePedido(Usuario usuario,Integer idpedido,Integer[] cantidades) {
-		boolean encontrado=false;
-		Iterator<Pedido> it = usuario.getListapedidios().iterator();
-		while(it.hasNext() && !encontrado) {
-			Pedido pedido = it.next();
-			if(Objects.equals(pedido.getId(), idpedido)) {
-				Pedido ped=findById(idpedido);
-				ped.getListaproductos();
-				Map<Producto,Integer>editado= new HashMap<>();
-				List<Producto>productos = repositorioproductos.findAll();
-				for(int i=0; i<cantidades.length;i++) {
-					
-					editado.put(productos.get(i), cantidades[i]);
-				}
-				encontrado = true;
-			}
+	public Pedido updatePedido(Pedido pedd,Integer[] cantidades) {
+		int i=0;
+		Iterator<PedidoLinea> it = pedd.getListaproductos().iterator();
+		while(it.hasNext()) {
+				PedidoLinea linea=it.next();
+				linea.setCantidad(cantidades[i]);
+				i=i+1;
 		}
-		return null;
+		return pedd;
 	}
 	public void borrar(Pedido e) {
 		Iterator<PedidoLinea> it = e.getListaproductos().iterator();

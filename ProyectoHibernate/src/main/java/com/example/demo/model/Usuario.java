@@ -16,17 +16,20 @@ import javax.validation.constraints.Email;
 @Entity
 @Table(name="Usuarios")
 public class Usuario {
+	//Id autogenerada
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+	//Atributos del usuario
 	private String username;
 	private String password;
 	private String direccion;
 	private String email;
 	private String telefono;
+	//Un usuario puede tener varios pedidos
 	@OneToMany(cascade =CascadeType.ALL, orphanRemoval = true,
 			fetch=FetchType.EAGER)
 	private List<Pedido> listapedidios=new ArrayList<>();
-	
+	//Constructores
 	public Usuario() {
 		super();
 	}
@@ -46,7 +49,7 @@ public class Usuario {
 		this.listapedidios = listapedidios;
 		this.telefono=telefono;
 	}
-
+	//Getters y Setters
 	public Integer getId() {
 		return id;
 	}
@@ -93,6 +96,7 @@ public class Usuario {
 	public void addPedido(Pedido p) {
 		this.listapedidios.add(p);
 	}
+	//HashCode y Equals
 	@Override
 	public int hashCode() {
 		return Objects.hash(password, username);
@@ -109,12 +113,5 @@ public class Usuario {
 		Usuario other = (Usuario) obj;
 		return Objects.equals(password, other.password) && Objects.equals(username, other.username);
 	}
-
-	@Override
-	public String toString() {
-		return "Usuario [id=" + id + ", username=" + username + ", password=" + password + ", direccion=" + direccion
-				+ ", email=" + email + ", telefono=" + telefono + ", listapedidios=" + listapedidios + "]";
-	}
-
 	
 }
