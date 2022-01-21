@@ -1,0 +1,15 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+<meta charset="UTF-8">
+<title></title>
+</head>
+<body>
+<header th:fragment="cabecera">
+	<form action="#" th:action="@{/login/logout}" method="post">
+	<input type="submit" value="Cerrar Sesion">
+	</form>
+</header>
+</body>
+</html>

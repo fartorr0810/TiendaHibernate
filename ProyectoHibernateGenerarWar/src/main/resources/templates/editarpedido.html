@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Edicion de pedido</title>
+     <link href="/css/nuevopedido.css" rel="stylesheet" type="text/css"/>
+
+</head>
+<body>
+	<form th:action="@{/editarpedido/submit}" method="post" >
+	<table>
+		<caption>Edite su pedido</caption>
+	<thead>
+    	<tr>
+      		<th id="id">ID</th>
+			<th id="name">Nombre</th>
+      		<th id="price">Precio</th>
+      		<th id="Cantidad">Cantidad</th>
+    	</tr>
+  	</thead>
+  		<tbody>
+  		<tr>
+  		<td ><input type="text" name="idpedido" th:value="${pedido.getId()}" th:attra></td>
+  		
+  		</tr>
+		<tr th:each="producto : ${pedido.getListaproductos()}">
+			<td th:text="${producto.getProducto().getId()}"></td>
+			<td th:text="${producto.getProducto().getNombre()}"></td>
+			<td th:text="${producto.getProducto().getPrecio()}"></td>
+ <td ><input type="number" name="cantidades" min="0" th:value="${producto.getCantidad()}"/></td>
+		</tr>
+	</tbody>
+	</table>
+	 <input type="submit" value="Confirmar"/>
+	</form>	
+</body>
+</html>

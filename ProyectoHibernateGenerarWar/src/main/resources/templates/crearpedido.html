@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+<meta charset="UTF-8">
+<title>Crear pedido</title>
+     <link href="/css/login.css" rel="stylesheet" type="text/css"/>
+
+</head>
+<body>
+<header th:insert="cabecera::cabecera"></header>
+<form th:action="@{/crearpedido/submit}" method="post">
+<table>
+	<caption>Crea tu pedido</caption>
+  <thead>
+    <tr>
+      <th id="id">ID</th>
+      <th id="name">Nombre</th>
+      <th id="price">Precio</th>
+      <th id="Cantidad">Cantidad</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="producto : ${listaproductos}">
+      <td th:text="${producto.id}"/>
+      <td th:text="${producto.nombre}"/>
+      <td th:text="${producto.precio}"/>
+      <td><input type="number"  min="0" name="numeroproducto" value="0"></td>
+    </tr>
+	</table>	
+	<input type="submit" value="Aceptar">
+</form>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Lista pedidos</title>
+     <link href="/css/listapedidos.css" rel="stylesheet" type="text/css"/>
+
+</head>
+<body>
+	<h1>La lista de pedidos</h1>
+<header th:insert="cabecera::cabecera"></header>
+	<form action="">
+	<table>
+		<a href="/seleccion/crearpedido">Nuevo pedido</a>
+	<caption>Pedidos</caption>
+	  <thead>
+	    <tr>
+	      <th id="id">ID PEDIDO</th>
+	      <th id="u">DIRECCION</th>
+	      <th id="o">FECHA</th>
+	      <th id="e">TELEFONO</th>
+	      <th id="i">EMAIL</th>
+	      <th id="a">TIPO PEDIDO</th>
+	    </tr>
+	  </thead>
+	<tbody>
+		<tr th:each="pedido : ${listapedidos}">
+			<td th:text="${pedido.getId()}"></td>
+			<td th:text="${pedido.getDireccionentrega()}"></td>
+			<td th:text="${pedido.getFechapedido()}"></td>
+			<td th:text="${pedido.getTelefonopedido()}"></td>
+			<td th:text="${pedido.getEmailcontacto()}"></td>
+			<td th:text="${pedido.getTipopedido()}"></td>
+			<td><a th:href="@{/pedido/editarpedido/{id}(id=${pedido.id})}">Editar</a></td>
+			<td><a th:href="@{/borrarpedido/{id}(id=${pedido.id})}">Eliminar Pedido</a></td>
+			
+		</tr>
+	</tbody>
+	</table>
+</form>
+</body>
+</html>

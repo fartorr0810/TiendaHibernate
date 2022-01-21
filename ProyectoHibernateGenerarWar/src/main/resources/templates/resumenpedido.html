@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Resumen Pedido</title>
+     <link href="/css/nuevopedido.css" rel="stylesheet" type="text/css"/>
+
+</head>
+<body>
+<header th:insert="cabecera::cabecera"></header>
+	<form action="#" th:action="@{/seleccion/listado}" method="post" th:object="${pedido}">
+	<table>
+		<caption>Listado del pedido</caption>
+	  <thead>
+		<input type="text" name="idpedido" th:value="${pedido.getId()}" th:attrappend="readonly=${pedido.getId()>0}"/>
+	    <tr>
+	      <th id="id">Producto</th>
+	      <th id="name">Precio</th>
+	      <th id="price">Cantidad</th>
+	      <th id="Cantidad">Precio Total</th>
+	    </tr>
+	  </thead>
+	<tbody>
+		<tr th:each="linea: ${lineas}">
+			<td th:text="${linea.getProducto().getNombre()}"></td>
+			<td th:text="${linea.getProducto().getPrecio()}"></td>
+			<td th:text="${linea.getCantidad()}"></td> 
+			<td th:text="${linea.getCantidad()*linea.getProducto().getPrecio()}"></td>
+		</tr>
+	</tbody>
+	</table>
+	<table>
+		<caption>Edite si desea los datos de envio de su pedido</caption>
+		<thead>
+	    <tr>
+	      	<th id="primerdato">Email</th>
+	      	<th id="segundodato">Telefono</th>
+	      	<th id="tercerdato">Direccion</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+		<tr >
+		<td><input type="text" name="email" th:value="${usuario.getEmail()}"/></td>
+		<td><input type="number" name="telefono" th:value="${usuario.getTelefono()}"/></td>
+		<td><input type="text" name="direccion" th:value="${usuario.getDireccion()}"/></td>
+		</tr>
+
+	</table>
+		<table>
+			<caption>Tipo de envio</caption>
+		<thead>
+	    <tr>
+	      	<th id="info">Elige el tipo de envio</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+		<tr>
+		<h5>Elige tu tipo de envio (EXPRESS,NORMAL,EN TIENDA)</h5>
+		<tr>
+		<td><input type="radio" name="tipoenvio" value="Express"/>Express</td>
+		<td><input type="radio" name="tipoenvio" value="Normal" checked/>Normal</td>
+		<td><input type="radio" name="tipoenvio" value="En Tienda"/>Tienda</td>
+		</tr>
+	</table>
+		<input type="submit" value="Enviar"/>
+	</form>
+</body>
+</html>
